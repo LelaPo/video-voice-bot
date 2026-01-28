@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    volumes:
-      - /tmp/bot_files:/tmp/bot_files
+    tmpfs:
+      - /tmp/bot_files:mode=1777,size=512M
     healthcheck:
       test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
       interval: 30s
