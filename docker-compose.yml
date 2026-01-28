@@ -1,0 +1,20 @@
+services:
+  bot:
+    build: .
+    container_name: video-voice-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - /tmp/bot_files:/tmp/bot_files
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
