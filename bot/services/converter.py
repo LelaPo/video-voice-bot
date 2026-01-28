@@ -148,3 +148,55 @@ class ConversionService:
             success=True,
             duration=duration
         )
+    
+    async def extract_audio_from_video(
+        self,
+        input_path: str,
+        output_path: str
+    ) -> ConversionResult:
+        
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i", input_path,
+            "-vn",
+            "-c:a", "libopus",
+            "-b:a", "64k",
+            "-vbr", "on",
+            "-compression_level", "10",
+            "-application", "voip",
+            output_path
+        ]
+        
+        process = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        
+        _, stderr = await process.communicate()
+        
+        if process.returncode != 0:
+            error_text = stderr.decode() if stderr else "Unknown error"
+            if "does not contain any stream" in error_text or "Output file is empty" in error_text:
+                return ConversionResult(
+                    success=False,
+                    error="Видео не содержит аудиодорожки"
+                )
+            return ConversionResult(
+                success=False,
+                error=error_text[:500]
+            )
+        
+        if not Path(output_path).exists():
+            return ConversionResult(
+                success=False,
+                error="Output file was not created"
+            )
+        
+        duration = await self.get_media_duration(output_path)
+        
+        return ConversionResult(
+            success=True,
+            duration=duration
+        )

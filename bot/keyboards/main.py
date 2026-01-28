@@ -5,16 +5,22 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
     keyboard = [
         [
             InlineKeyboardButton(
-                text="Видео в кружок",
+                text="Видео → Кружок",
                 callback_data="mode_circle"
             )
         ],
         [
             InlineKeyboardButton(
-                text="Аудио в голосовое",
+                text="Аудио → Голосовое",
                 callback_data="mode_voice"
             )
-        ]
+        ],
+        [
+            InlineKeyboardButton(
+                text="Видео → Аудио",
+                callback_data="mode_video_to_audio"
+            )
+        ],
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
@@ -23,8 +29,8 @@ def get_mode_keyboard() -> InlineKeyboardMarkup:
     keyboard = [
         [
             InlineKeyboardButton(
-                text="Назад",
-                callback_data="back_to_main"
+                text="Сбросить режим",
+                callback_data="reset_mode"
             )
         ]
     ]
